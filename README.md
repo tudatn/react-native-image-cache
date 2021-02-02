@@ -2,12 +2,27 @@ This module is to provide methods to cache, preload, and download images for Rea
 
 ### Installation
 
-Install required dependencies:
+This package is using `FileSystem` of [react-native-unimodules](https://github.com/unimodules/react-native-unimodules) of Expo. Please follow the instructions at https://docs.expo.io/bare/installing-unimodules/ to add configurations for iOS and Android.
 
-`npm install RNFetchBlob @react-native-community/async-storage vavalid-url object-hash`
+### Usage
 
-#### Available methods
+#### CacheImage component
+```
+import { CacheImage } from 'react-native-cache-image';
 
-`function preloadImages(uris, listener = (value) => {})`
+export default function Example(props) {
+    return (
+        <View>
+            <CacheImage uri='https://images.pexels.com/photos/6468238/pexels-photo-6468238.jpeg' fallbackUri={require('./assets/image_placeholder.jpg')} />
+        </View>
+    )
+}
+```
 
-`function fetchImage(uri, callback = (value) => {})`
+#### Preload images
+
+```
+import { preloadImages, fetchImage } from 'react-native-cache-image';
+```
+
+### License: MIT

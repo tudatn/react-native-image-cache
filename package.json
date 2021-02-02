@@ -1,0 +1,30 @@
+{
+  "name": "react-native-image-cache",
+  "version": "1.0.0",
+  "description": "Fetch and cache image for React Native",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tudatn/react-native-image-cache.git"
+  },
+  "keywords": [
+    "image",
+    "cache"
+  ],
+  "dependencies": {
+    "valid-url": "^1.0.9",
+    "object-hash": "^2.0.3",
+    "react": "^16.13.1",
+    "react-native": "^0.60.0",
+    "react-native-unimodules": "^0.12.0"
+  },
+  "author": "Tu Dat Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tudatn/react-native-image-cache/issues"
+  },
+  "homepage": "https://github.com/tudatn/react-native-image-cache#readme"
+}
