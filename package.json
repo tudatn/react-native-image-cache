@@ -2,9 +2,10 @@
   "name": "react-native-image-cache",
   "version": "1.0.0",
   "description": "Fetch and cache image for React Native",
-  "main": "index.js",
+  "main": "lib/commonjs/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "bob build"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,29 @@
   "bugs": {
     "url": "https://github.com/tudatn/react-native-image-cache/issues"
   },
-  "homepage": "https://github.com/tudatn/react-native-image-cache#readme"
+  "homepage": "https://github.com/tudatn/react-native-image-cache#readme",
+  "devDependencies": {
+    "react-native-builder-bob": "^0.17.1"
+  },
+  "react-native": "src/index.js",
+  "module": "lib/module/index.js",
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }

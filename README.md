@@ -2,7 +2,7 @@ This module is to provide methods to cache, preload, and download images for Rea
 
 ### Installation
 
-This package is using `FileSystem` of [react-native-unimodules](https://github.com/unimodules/react-native-unimodules) of Expo. Please follow the instructions at https://docs.expo.io/bare/installing-unimodules/ to add configurations for iOS and Android.
+This package is using `FileSystem` of [Expo react-native-unimodules](https://github.com/unimodules/react-native-unimodules). Please follow the instructions at https://docs.expo.io/bare/installing-unimodules/ to add configurations for iOS and Android.
 
 ### Usage
 
