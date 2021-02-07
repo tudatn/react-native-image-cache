@@ -48,54 +48,6 @@ export function preloadImages(
   });
 }
 
-/**
- * Fetch image from uri
- *
- * The callback if provided will be called on resolve
- *
- * @param {string} uri
- * @returns {Promise} return a promise with {uri, imagePath} object on resolve and error on reject
- */
-export function fetchImage(
-  uri: string,
-  callback?: (value: MappingObj) => void
-) {
-  const fileInfo = getImageInfo(uri);
-  return new Promise<MappingObj>(async (resolve, reject) => {
-    try {
-      if (!fileInfo) {
-        throw new Error(`wrong file format: ${uri}`);
-      }
-      // try to get image path
-      const imagePath = await getImagePath(fileInfo);
-      if (imagePath) {
-        callback && callback({ uri, imagePath });
-        resolve({ uri, imagePath });
-      } else {
-        const fileUri = generateAbsolutePath(fileInfo);
-        try {
-          const res = await FileSystem.downloadAsync(uri, fileUri);
-          if (res.status === 200) {
-            const uriMapObject = {
-              uri: uri,
-              imagePath: res.uri,
-            };
-            // resolve the image path
-            callback && callback(uriMapObject);
-            resolve(uriMapObject);
-          } else {
-            throwErrorOnInCompletedImageFetch(uri, fileUri);
-          }
-        } catch (error) {
-          throwErrorOnInCompletedImageFetch(uri, fileUri);
-        }
-      }
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
 function generateAbsolutePath(fileInfo: string) {
   return FileSystem.cacheDirectory + fileInfo;
 }
@@ -131,7 +83,7 @@ function downloadImages(
   callback?: (value: MappingObj) => void
 ) {
   const loadImage = async (uri: string) => {
-    return preloadImage(uri, callback).catch(() => {});
+    return fetchImage(uri, callback).catch(() => {});
   };
   // TODO: replace by Promise.allSettled()
   return Promise.all(uris.map(loadImage));
@@ -165,7 +117,10 @@ function getImageInfo(uri: string) {
  * @param {*} callback
  * @returns {Promise} return a promise with {uri, imagePath} object on resolve and error on reject
  */
-function preloadImage(uri: string, callback?: (value: any) => void) {
+export function fetchImage(
+  uri: string,
+  callback?: (value: MappingObj) => void
+) {
   const fileInfo = getImageInfo(uri);
   return new Promise<MappingObj>(async (resolve, reject) => {
     try {

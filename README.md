@@ -30,7 +30,7 @@ imageCache
     .preloadImages(preloadingImages, updateProgress)
     .then((result) => {
         // console.log(result.downloaded / result.tried)
-        // can use all images offline now
+        // now can use all images offline
     })
     .catch((error) => {
         console.log(error);
