@@ -7,8 +7,8 @@ This package is using `FileSystem` of [Expo react-native-unimodules](https://git
 ### Usage
 
 #### CacheImage component
-```javascript
-import { CacheImage } from 'react-native-cache-image';
+```typescript
+import { CacheImage } from 'react-native-caches-image';
 
 export default function Example(props) {
     return (
@@ -23,8 +23,25 @@ export default function Example(props) {
 
 #### Preload images
 
-```
-import { preloadImages, fetchImage } from 'react-native-cache-image';
+```typescript
+import { imageCache } from 'react-native-images-cache';
+
+imageCache
+    .preloadImages(preloadingImages, updateProgress)
+    .then((result) => {
+        const downloadPercentage =
+            result.downloaded / result.tried;
+        } else setDataProgress(1);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+function updateProgress(mappingObject) {
+    // calculate progress for each fetched image
+}
 ```
 
-### License: MIT
+### License:
+
+The source code is made available under the MIT license. Some of the dependencies are licensed differently, with the BSD license, for example.

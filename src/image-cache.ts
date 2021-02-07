@@ -9,6 +9,11 @@ export interface MappingObj {
   imagePath: string;
 }
 
+export interface PreloadResult {
+  tried: number;
+  downloaded: number;
+}
+
 /**
  * Preload as many prefetchable images as possible from an array of uris.
  *
@@ -17,8 +22,11 @@ export interface MappingObj {
  * @param {string[]} uris
  * @returns {Promise} Promise with {info: {tried, downloaded}} object on resolve or error on reject
  */
-export function preloadImages(uris: string[], listener?: (value: any) => void) {
-  return new Promise(async (resolve, reject) => {
+export function preloadImages(
+  uris: string[],
+  listener?: (value: MappingObj) => void
+) {
+  return new Promise<PreloadResult>(async (resolve, reject) => {
     if (!Array.isArray(uris)) reject("uris is not an array");
     try {
       const responses = await downloadImages(uris, listener);
@@ -33,7 +41,7 @@ export function preloadImages(uris: string[], listener?: (value: any) => void) {
         tried: uris.length,
         downloaded: numberOfDownloadedImages,
       };
-      resolve({ info });
+      resolve(info);
     } catch (error) {
       return reject(error);
     }
@@ -48,7 +56,10 @@ export function preloadImages(uris: string[], listener?: (value: any) => void) {
  * @param {string} uri
  * @returns {Promise} return a promise with {uri, imagePath} object on resolve and error on reject
  */
-export function fetchImage(uri: string, callback?: (value: any) => void) {
+export function fetchImage(
+  uri: string,
+  callback?: (value: MappingObj) => void
+) {
   const fileInfo = getImageInfo(uri);
   return new Promise<MappingObj>(async (resolve, reject) => {
     try {
@@ -115,7 +126,10 @@ async function getImagePath(fileInfo: string) {
  * @param {string[]} uris array of image uris
  * @returns {Promise} A promise with array of [{uri, imagePath} | undefined]
  */
-function downloadImages(uris: string[], callback?: (value: any) => void) {
+function downloadImages(
+  uris: string[],
+  callback?: (value: MappingObj) => void
+) {
   const loadImage = async (uri: string) => {
     return preloadImage(uri, callback).catch(() => {});
   };
@@ -153,7 +167,7 @@ function getImageInfo(uri: string) {
  */
 function preloadImage(uri: string, callback?: (value: any) => void) {
   const fileInfo = getImageInfo(uri);
-  return new Promise(async (resolve, reject) => {
+  return new Promise<MappingObj>(async (resolve, reject) => {
     try {
       if (!fileInfo) {
         throw new Error(`wrong file format: ${uri}`);
@@ -171,8 +185,8 @@ function preloadImage(uri: string, callback?: (value: any) => void) {
               uri: uri,
               imagePath: res.uri,
             };
-            callback && callback({ uriMapObject });
-            resolve({ uri, fileInfo });
+            callback && callback(uriMapObject);
+            resolve(uriMapObject);
           } else {
             throwErrorOnInCompletedImageFetch(uri, fileUri);
           }
