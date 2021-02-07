@@ -4,6 +4,11 @@ import hash from "object-hash";
 
 const validImageExtensions = [".jpg", ".png", ".jpeg", ".gif"];
 
+export interface MappingObj {
+  uri: string;
+  imagePath: string;
+}
+
 /**
  * Preload as many prefetchable images as possible from an array of uris.
  *
@@ -12,7 +17,7 @@ const validImageExtensions = [".jpg", ".png", ".jpeg", ".gif"];
  * @param {string[]} uris
  * @returns {Promise} Promise with {info: {tried, downloaded}} object on resolve or error on reject
  */
-export function preloadImages(uris, listener = (value) => {}) {
+export function preloadImages(uris: string[], listener?: (value: any) => void) {
   return new Promise(async (resolve, reject) => {
     if (!Array.isArray(uris)) reject("uris is not an array");
     try {
@@ -43,9 +48,9 @@ export function preloadImages(uris, listener = (value) => {}) {
  * @param {string} uri
  * @returns {Promise} return a promise with {uri, imagePath} object on resolve and error on reject
  */
-export function fetchImage(uri, callback = (value) => {}) {
+export function fetchImage(uri: string, callback?: (value: any) => void) {
   const fileInfo = getImageInfo(uri);
-  return new Promise(async (resolve, reject) => {
+  return new Promise<MappingObj>(async (resolve, reject) => {
     try {
       if (!fileInfo) {
         throw new Error(`wrong file format: ${uri}`);
@@ -53,7 +58,7 @@ export function fetchImage(uri, callback = (value) => {}) {
       // try to get image path
       const imagePath = await getImagePath(fileInfo);
       if (imagePath) {
-        callback({ uri, imagePath });
+        callback && callback({ uri, imagePath });
         resolve({ uri, imagePath });
       } else {
         const fileUri = generateAbsolutePath(fileInfo);
@@ -65,7 +70,7 @@ export function fetchImage(uri, callback = (value) => {}) {
               imagePath: res.uri,
             };
             // resolve the image path
-            callback(uriMapObject);
+            callback && callback(uriMapObject);
             resolve(uriMapObject);
           } else {
             throwErrorOnInCompletedImageFetch(uri, fileUri);
@@ -80,7 +85,7 @@ export function fetchImage(uri, callback = (value) => {}) {
   });
 }
 
-function generateAbsolutePath(fileInfo) {
+function generateAbsolutePath(fileInfo: string) {
   return FileSystem.cacheDirectory + fileInfo;
 }
 
@@ -90,13 +95,14 @@ function generateAbsolutePath(fileInfo) {
  *
  * @param {string} fileInfo
  */
-async function getImagePath(fileInfo) {
+async function getImagePath(fileInfo: string) {
   try {
     const imagePath = generateAbsolutePath(fileInfo);
     const isDownloaded = await FileSystem.getInfoAsync(imagePath);
     if (isDownloaded.exists) {
       return imagePath;
     }
+    return isDownloaded.exists ? imagePath : undefined;
   } catch {
     return;
   }
@@ -109,12 +115,9 @@ async function getImagePath(fileInfo) {
  * @param {string[]} uris array of image uris
  * @returns {Promise} A promise with array of [{uri, imagePath} | undefined]
  */
-function downloadImages(uris, callback) {
-  const loadImage = async (uri) => {
-    return preloadImage(uri, callback).catch((e) => {
-      // for debug
-      console.log(e);
-    });
+function downloadImages(uris: string[], callback?: (value: any) => void) {
+  const loadImage = async (uri: string) => {
+    return preloadImage(uri, callback).catch(() => {});
   };
   // TODO: replace by Promise.allSettled()
   return Promise.all(uris.map(loadImage));
@@ -126,7 +129,7 @@ function downloadImages(uris, callback) {
  * @param {string} uri Uri of the file
  * @returns hashed_file_name.fileExtension | undefined
  */
-function getImageInfo(uri) {
+function getImageInfo(uri: string) {
   if (validUrl.isUri(uri)) {
     const path = uri.substring(uri.lastIndexOf("/"));
     const pathName =
@@ -139,6 +142,7 @@ function getImageInfo(uri) {
       }
     }
   }
+  return;
 }
 
 /**
@@ -147,7 +151,7 @@ function getImageInfo(uri) {
  * @param {*} callback
  * @returns {Promise} return a promise with {uri, imagePath} object on resolve and error on reject
  */
-function preloadImage(uri, callback = (value) => {}) {
+function preloadImage(uri: string, callback?: (value: any) => void) {
   const fileInfo = getImageInfo(uri);
   return new Promise(async (resolve, reject) => {
     try {
@@ -156,7 +160,7 @@ function preloadImage(uri, callback = (value) => {}) {
       }
       const imagePath = await getImagePath(fileInfo);
       if (imagePath) {
-        callback({ uri, imagePath });
+        callback && callback({ uri, imagePath });
         resolve({ uri, imagePath });
       } else {
         const fileUri = generateAbsolutePath(fileInfo);
@@ -167,7 +171,7 @@ function preloadImage(uri, callback = (value) => {}) {
               uri: uri,
               imagePath: res.uri,
             };
-            callback({ uriMapObject });
+            callback && callback({ uriMapObject });
             resolve({ uri, fileInfo });
           } else {
             throwErrorOnInCompletedImageFetch(uri, fileUri);
@@ -182,7 +186,7 @@ function preloadImage(uri, callback = (value) => {}) {
   });
 }
 
-function throwErrorOnInCompletedImageFetch(uri, fileUri) {
+function throwErrorOnInCompletedImageFetch(uri: string, fileUri: string) {
   FileSystem.deleteAsync(fileUri, { idempotent: true });
   throw new Error(`cannot preload image: ${uri}`);
 }

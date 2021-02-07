@@ -16,11 +16,11 @@
     "cache"
   ],
   "dependencies": {
-    "valid-url": "^1.0.9",
     "object-hash": "^2.0.3",
     "react": "^16.13.1",
-    "react-native": "^0.60.0",
-    "react-native-unimodules": "^0.12.0"
+    "react-native": ">=0.60.0",
+    "react-native-unimodules": "^0.12.0",
+    "valid-url": "^1.0.9"
   },
   "author": "Tu Dat Nguyen",
   "license": "MIT",
@@ -29,9 +29,13 @@
   },
   "homepage": "https://github.com/tudatn/react-native-image-cache#readme",
   "devDependencies": {
-    "react-native-builder-bob": "^0.17.1"
+    "@types/object-hash": "^1.3.4",
+    "@types/react-native": "^0.63.46",
+    "@types/valid-url": "^1.0.3",
+    "react-native-builder-bob": "^0.17.1",
+    "typescript": "^3.8.3"
   },
-  "react-native": "src/index.js",
+  "react-native": "src/index.ts",
   "module": "lib/module/index.js",
   "files": [
     "src",
@@ -45,11 +49,13 @@
     "output": "lib",
     "targets": [
       "commonjs",
-      "module"
+      "module",
+      "typescript"
     ]
   },
   "eslintIgnore": [
     "node_modules/",
     "lib/"
-  ]
+  ],
+  "types": "lib/typescript/index.d.ts"
 }
