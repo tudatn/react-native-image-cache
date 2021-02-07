@@ -7,13 +7,15 @@ This package is using `FileSystem` of [Expo react-native-unimodules](https://git
 ### Usage
 
 #### CacheImage component
-```
+```javascript
 import { CacheImage } from 'react-native-cache-image';
 
 export default function Example(props) {
     return (
         <View>
-            <CacheImage uri='https://images.pexels.com/photos/6468238/pexels-photo-6468238.jpeg' fallbackUri={require('./assets/image_placeholder.jpg')} />
+            <CacheImage 
+                uri='https://images.pexels.com/photos/6468238/pexels-photo-6468238.jpeg' 
+                localFallbackImage={require('./assets/image_placeholder.jpg')} />
         </View>
     )
 }
