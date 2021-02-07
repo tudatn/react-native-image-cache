@@ -1,5 +1,5 @@
 {
-  "name": "react-native-image-cache",
+  "name": "react-native-images-cache",
   "version": "1.0.0",
   "description": "Fetch and cache image for React Native",
   "main": "lib/commonjs/index.js",
