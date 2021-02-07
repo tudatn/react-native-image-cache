@@ -29,15 +29,15 @@ import { imageCache } from 'react-native-images-cache';
 imageCache
     .preloadImages(preloadingImages, updateProgress)
     .then((result) => {
-        const downloadPercentage =
-            result.downloaded / result.tried;
-        } else setDataProgress(1);
+        // console.log(result.downloaded / result.tried)
+        // can use all images offline now
     })
     .catch((error) => {
         console.log(error);
     });
 
 function updateProgress(mappingObject) {
+    // received mappingObject: { uri, imagePath }
     // calculate progress for each fetched image
 }
 ```
